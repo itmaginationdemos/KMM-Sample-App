@@ -3,13 +3,16 @@ package com.example.voicenotes.android
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.voicenotes.Greeting
+import com.example.voicenotes.usecase.GetNotes
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
     private val scope = MainScope()
+
+    private val getNotes: GetNotes by inject()
 
     override fun onDestroy() {
         super.onDestroy()
@@ -25,9 +28,9 @@ class MainActivity : AppCompatActivity() {
 
         scope.launch {
             kotlin.runCatching {
-                Greeting().greeting()
+                getNotes()
             }.onSuccess {
-                tv.text = it
+                tv.text = it.first().title
             }.onFailure {
                 tv.text = it.localizedMessage
             }

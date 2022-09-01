@@ -20,10 +20,13 @@ kotlin {
 
     val sqlDelightVersion: String by project
     val ktorVersion = "2.0.2"
+    val koin = "3.2.0"
 
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation("io.insert-koin:koin-core:$koin")
+
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
