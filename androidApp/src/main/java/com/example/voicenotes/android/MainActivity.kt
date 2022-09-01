@@ -1,9 +1,9 @@
 package com.example.voicenotes.android
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.voicenotes.Greeting
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.example.voicenotes.Greeting
 
 fun greet(): String {
     return Greeting().greeting()
