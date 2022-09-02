@@ -1,12 +1,13 @@
 package com.example.voicenotes.android
 
 import android.app.Application
+import com.example.voicenotes.android.main.di.androidModule
 import com.example.voicenotes.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
-class App: Application() {
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -14,7 +15,7 @@ class App: Application() {
         startKoin {
             androidContext(this@App)
             androidLogger()
-            modules(appModule())
+            modules(appModule() + androidModule())
         }
     }
 }

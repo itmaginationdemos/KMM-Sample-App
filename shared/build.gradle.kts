@@ -18,7 +18,7 @@ kotlin {
         }
     }
 
-    val sqlDelightVersion: String by project
+    val sqlDelightVersion = "1.4.2"
     val ktorVersion = "2.0.2"
     val koin = "3.2.0"
 
