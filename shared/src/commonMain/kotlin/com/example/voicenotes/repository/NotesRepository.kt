@@ -5,20 +5,25 @@ import kotlinx.coroutines.delay
 
 class NotesRepository {
 
-    private var notes = emptyList<NoteResource>()
+    private var notes: MutableList<NoteResource> = mutableListOf()
 
     // todo add sql delight stuff
     // https://play.kotlinlang.org/hands-on/Networking%20and%20Data%20Storage%20with%20Kotlin%20Multiplatfrom%20Mobile/05_Configuring_SQLDelight_an_implementing_cache
 
     suspend fun getNotes(): List<NoteResource> {
         delay(2000)
-        notes = listOf(note1, note2, note3, note2, note3)
+        notes = mutableListOf(note1, note2, note3, note2.copy(id = 4L), note3.copy(id = 5L))
         return notes
     }
 
     fun getNote(id: String?): NoteResource {
         if (id == null) return notes.first()
         return notes.first { it.id.toString() == id }
+    }
+
+    fun deleteNote(id: String): List<NoteResource> {
+        notes.removeAll { it.id.toString() == id }
+        return notes
     }
 }
 

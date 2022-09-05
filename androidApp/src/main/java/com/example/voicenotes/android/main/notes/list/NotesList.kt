@@ -12,7 +12,8 @@ import com.example.voicenotes.model.Note
 @Composable
 fun NotesList(
     list: List<Note>,
-    navController: NavController
+    navController: NavController,
+    onDeleteClicked: (String) -> Unit
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.Center,
@@ -21,7 +22,8 @@ fun NotesList(
         items(list) { note ->
             NoteItem(
                 note = note,
-                onItemClicked = { route -> navController.navigate(route) }
+                onItemClicked = { route -> navController.navigate(route) },
+                onDeleteClicked = onDeleteClicked
             )
         }
     }

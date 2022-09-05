@@ -4,10 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,18 +25,40 @@ import com.example.voicenotes.model.NoteLength
 import com.example.voicenotes.model.NoteLengthType
 
 @Composable
-fun NoteItem(note: Note, onItemClicked: (String) -> Unit) {
+fun NoteItem(
+    note: Note,
+    onItemClicked: (String) -> Unit,
+    onDeleteClicked: (String) -> Unit
+) {
     Card(
-        modifier = Modifier.padding(8.dp).clickable {
-            onItemClicked("$notesDetailScreen/${note.id}")
-        }
+        modifier = Modifier.padding(8.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier
+                .padding(12.dp)
+                .clickable { onItemClicked("$notesDetailScreen/${note.id}") },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ) {
-            Title(note.title)
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Title(
+                    title = note.title,
+                    modifier = Modifier.weight(8f)
+                )
+                IconButton(
+                    onClick = { onDeleteClicked(note.id.toString()) },
+                    modifier = Modifier.weight(2f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Delete note",
+                        tint = Color.Red,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
             LengthBubble(note.noteLength)
             Content(note.content)
         }
@@ -38,10 +66,10 @@ fun NoteItem(note: Note, onItemClicked: (String) -> Unit) {
 }
 
 @Composable
-fun Title(title: String) {
+fun Title(title: String, modifier: Modifier) {
     Text(
         text = title,
-        modifier = Modifier.padding(8.dp),
+        modifier = modifier.padding(8.dp),
         style = MaterialTheme.typography.subtitle1
     )
 }
@@ -62,7 +90,9 @@ fun LengthBubble(noteLength: NoteLength) {
     ) {
         Text(
             text = noteLength.label,
-            modifier = Modifier.background(resolveColor(noteLength.length)).padding(8.dp)
+            modifier = Modifier
+                .background(resolveColor(noteLength.length))
+                .padding(8.dp)
         )
     }
 }

@@ -5,7 +5,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import org.koin.androidx.compose.getViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,23 +16,22 @@ import com.example.voicenotes.android.main.core.constants.notesListScreen
 import com.example.voicenotes.android.main.notes.detail.NotesDetail
 import com.example.voicenotes.android.main.notes.detail.NotesDetailViewModel
 import com.example.voicenotes.android.main.notes.list.NotesList
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.example.voicenotes.android.main.notes.list.NotesListViewModel
+import org.koin.androidx.compose.getViewModel
 
 class MainActivity : AppCompatActivity() {
-
-    private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppNavHost(viewModel)
+            AppNavHost()
         }
     }
 }
 
 @Composable
-fun AppNavHost(viewModel: MainViewModel) {
+fun AppNavHost() {
     val navController = rememberNavController()
 
     MaterialTheme {
@@ -42,17 +40,21 @@ fun AppNavHost(viewModel: MainViewModel) {
             startDestination = notesListScreen
         ) {
             composable(notesListScreen) {
+                val vm = getViewModel<NotesListViewModel>()
                 NotesList(
-                    list = viewModel.notes.value,
-                    navController = navController
+                    list = vm.notes.value,
+                    navController = navController,
+                    onDeleteClicked = { (vm::onDeleteClicked)(it) }
                 )
             }
             composable(
                 route = "$notesDetailScreen/{$notesDetailScreen_args}",
-                arguments = listOf(navArgument(notesDetailScreen_args) { type = NavType.StringType })
+                arguments = listOf(
+                    navArgument(notesDetailScreen_args) { type = NavType.StringType }
+                )
             ) { entry ->
                 val vm = getViewModel<NotesDetailViewModel>()
-                NotesDetail(note = (vm::getNoteWith)(entry.arguments?.getString(notesDetailScreen_args)))
+                NotesDetail((vm::getNoteWith)(entry.arguments?.getString(notesDetailScreen_args)))
             }
         }
     }
