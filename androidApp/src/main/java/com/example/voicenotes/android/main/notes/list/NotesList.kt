@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
-import com.example.voicenotes.android.main.widgets.NoteItem
+import com.example.voicenotes.android.main.notes.list.widgets.NoteItem
 import com.example.voicenotes.model.Note
 
 @Composable

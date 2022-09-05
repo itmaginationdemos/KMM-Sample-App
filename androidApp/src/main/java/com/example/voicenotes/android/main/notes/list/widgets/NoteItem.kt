@@ -1,4 +1,4 @@
-package com.example.voicenotes.android.main.widgets
+package com.example.voicenotes.android.main.notes.list.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,7 +31,8 @@ fun NoteItem(
     onDeleteClicked: (String) -> Unit
 ) {
     Card(
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(8.dp),
+        elevation = 4.dp
     ) {
         Column(
             modifier = Modifier
@@ -70,7 +71,7 @@ fun Title(title: String, modifier: Modifier) {
     Text(
         text = title,
         modifier = modifier.padding(8.dp),
-        style = MaterialTheme.typography.subtitle1
+        style = MaterialTheme.typography.h5
     )
 }
 
