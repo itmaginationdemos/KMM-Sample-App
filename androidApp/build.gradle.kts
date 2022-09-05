@@ -42,6 +42,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 val koin = "3.2.0"
 val composeVersion = "1.2.0"
+val composeSupport = "2.5.1"
 
 dependencies {
     implementation(project(":shared"))
@@ -55,18 +56,13 @@ dependencies {
 
     implementation("io.insert-koin:koin-core:$koin")
     implementation("io.insert-koin:koin-android:$koin")
+    implementation("io.insert-koin:koin-androidx-compose:$koin")
 
     // Jetpack Compose
-    // Integration with activities
     implementation("androidx.activity:activity-compose:1.5.1")
-    // Compose Material Design
     implementation("androidx.compose.material:material:$composeVersion")
-    // Animations
     implementation("androidx.compose.animation:animation:$composeVersion")
-    // Tooling support (Previews, etc.)
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    // Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
-    // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$composeSupport")
+    implementation("androidx.navigation:navigation-compose:$composeSupport")
 }
