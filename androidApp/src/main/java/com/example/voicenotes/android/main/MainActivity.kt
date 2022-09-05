@@ -4,13 +4,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.voicenotes.android.main.widgets.NoteItem
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -29,13 +30,12 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     fun MainView(viewModel: MainViewModel) {
-        Column(
-            Modifier.fillMaxSize(),
+        LazyColumn(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            viewModel.notes.value.forEach { note ->
-                Text(text = note.title)
+            items(viewModel.notes.value) { note ->
+                NoteItem(note)
             }
         }
     }

@@ -1,8 +1,7 @@
 package com.example.voicenotes.model
 
-data class Note(
+data class NoteResource(
     val id: Long,
     val title: String,
-    val content: String,
-    val noteLength: NoteLength
+    val content: String
 )
