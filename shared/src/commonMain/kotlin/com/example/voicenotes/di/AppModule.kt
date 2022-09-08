@@ -2,5 +2,6 @@ package com.example.voicenotes.di
 
 fun appModule() = listOf(
     useCaseModule,
-    repositoryModule
+    repositoryModule,
+    platformModule()
 )

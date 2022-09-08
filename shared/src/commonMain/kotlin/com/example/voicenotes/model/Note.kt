@@ -1,7 +1,7 @@
 package com.example.voicenotes.model
 
 data class Note(
-    val id: Long,
+    val id: String,
     val title: String,
     val content: String,
     val noteLength: NoteLength

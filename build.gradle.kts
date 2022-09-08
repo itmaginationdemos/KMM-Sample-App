@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
 
-    val sqlDelightVersion = "1.4.2"
+    val sqlDelightVersion = "1.5.2"
 
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")

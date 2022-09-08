@@ -1,0 +1,21 @@
+CREATE TABLE NoteLocalResource (
+id TEXT NOT NULL PRIMARY KEY,
+title TEXT,
+content TEXT
+);
+
+insertNotes:
+INSERT INTO NoteLocalResource(id, title, content)
+VALUES (?,?,?);
+
+removeAllNotes:
+DELETE FROM NoteLocalResource;
+
+removeNoteById:
+DELETE FROM NoteLocalResource WHERE id = ?;
+
+selectNoteById:
+SELECT * FROM NoteLocalResource WHERE id = ?;
+
+selectAllNotes:
+SELECT * FROM NoteLocalResource;

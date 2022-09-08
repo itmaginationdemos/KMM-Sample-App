@@ -8,10 +8,12 @@ import androidx.compose.ui.Modifier
 import com.example.voicenotes.model.Note
 
 @Composable
-fun NotesDetail(note: Note) {
+fun NotesDetail(
+    note: Note?
+) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = note.title)
+        Text(text = note?.title ?: "")
     }
 }

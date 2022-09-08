@@ -8,16 +8,7 @@ plugins {
 kotlin {
     android()
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-    ).forEach {
-        it.binaries.framework {
-            baseName = "shared"
-        }
-    }
-
-    val sqlDelightVersion = "1.4.2"
+    val sqlDelightVersion = "1.5.2"
     val ktorVersion = "2.0.2"
     val koin = "3.2.0"
 
@@ -48,17 +39,12 @@ kotlin {
                 implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
             }
         }
-        val androidTest by getting
-        val iosX64Main by getting
-        val iosArm64Main by getting
         val iosMain by creating {
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
                 implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
             }
             dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
         }
     }
 }
@@ -75,5 +61,11 @@ android {
 kotlin.targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget::class.java) {
     binaries.all {
         binaryOptions["memoryModel"] = "experimental"
+    }
+}
+
+sqldelight {
+    database("AppDatabase") {
+        packageName = "com.example.voicenotes.kmm.shared.cache"
     }
 }

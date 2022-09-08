@@ -49,7 +49,7 @@ fun NoteItem(
                     modifier = Modifier.weight(8f)
                 )
                 IconButton(
-                    onClick = { onDeleteClicked(note.id.toString()) },
+                    onClick = { onDeleteClicked(note.id) },
                     modifier = Modifier.weight(2f)
                 ) {
                     Icon(

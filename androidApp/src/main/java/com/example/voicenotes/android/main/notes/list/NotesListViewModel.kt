@@ -22,6 +22,8 @@ class NotesListViewModel(
     }
 
     fun onDeleteClicked(id: String) {
-        notes.value = deleteNote(id)
+        viewModelScope.launch {
+            notes.value = deleteNote(id)
+        }
     }
 }

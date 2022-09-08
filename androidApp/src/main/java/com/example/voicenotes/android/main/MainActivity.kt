@@ -52,7 +52,8 @@ fun AppNavHost() {
                 )
             ) { entry ->
                 val vm = getViewModel<NotesDetailViewModel>()
-                NotesDetail((vm::getNoteWith)(entry.arguments?.getString(notesDetailScreen_args)))
+                vm.getNoteWith(entry.arguments?.getString(notesDetailScreen_args))
+                NotesDetail(note = vm.note.value)
             }
         }
     }
