@@ -33,7 +33,7 @@ class Database(driver: SqlDriver) {
         }
     }
 
-    private fun insertNote(note: NoteResource) {
+    fun insertNote(note: NoteResource) {
         dbQuery.insertNotes(
             id = note.id,
             title = note.title,

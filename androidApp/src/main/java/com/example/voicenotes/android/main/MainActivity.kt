@@ -37,14 +37,18 @@ fun AppNavHost() {
             navController = navController,
             startDestination = notesListScreen
         ) {
+            // list screen
             composable(notesListScreen) {
                 val vm = getViewModel<NotesListViewModel>()
                 NotesList(
                     list = vm.notes.value,
                     navController = navController,
-                    onDeleteClicked = { (vm::onDeleteClicked)(it) }
+                    onDeleteClicked = { (vm::onDeleteClicked)(it) },
+                    onAddClicked = { vm.onAddClicked() }
                 )
             }
+
+            // details screen
             composable(
                 route = "$notesDetailScreen/{$notesDetailScreen_args}",
                 arguments = listOf(

@@ -2,6 +2,7 @@ package com.example.voicenotes.repository
 
 import com.example.voicenotes.kmm.shared.cache.Database
 import com.example.voicenotes.model.NoteResource
+import kotlin.random.Random
 
 class NotesRepository(
     private val db: Database
@@ -23,5 +24,15 @@ class NotesRepository(
     suspend fun deleteNote(id: String): List<NoteResource> {
         db.deleteNote(id)
         return getNotes(true)
+    }
+
+    fun generateNote(): NoteResource {
+        val new = NoteResource(
+            Random.nextInt().toString(),
+            "Generic title",
+            "Generic content"
+        )
+        db.insertNote(new)
+        return new
     }
 }
