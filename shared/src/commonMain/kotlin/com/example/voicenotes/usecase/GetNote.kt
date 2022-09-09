@@ -9,9 +9,9 @@ import kotlinx.coroutines.withContext
 class GetNote(
     private val repository: NotesRepository
 ) {
-    suspend operator fun invoke(id: String?): Note {
+    suspend operator fun invoke(id: String): Note? {
         return withContext(Dispatchers.IO) {
-            repository.getNote(id).toNote()
+            repository.getNote(id)?.toNote()
         }
     }
 }

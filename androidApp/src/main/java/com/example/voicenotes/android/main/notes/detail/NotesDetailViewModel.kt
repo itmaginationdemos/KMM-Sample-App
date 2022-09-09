@@ -15,6 +15,7 @@ class NotesDetailViewModel(
     val note: MutableState<Note?> = mutableStateOf(null)
 
     fun getNoteWith(id: String?) {
+        if (id == null) return
         viewModelScope.launch {
             note.value = getNote(id)
         }

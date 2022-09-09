@@ -16,9 +16,8 @@ class NotesRepository(
         return notes
     }
 
-    suspend fun getNote(id: String?): NoteResource {
-        if (id == null) return notes.first()
-        return notes.first { it.id == id }
+    suspend fun getNote(id: String): NoteResource? {
+        return db.getNoteWithId(id)
     }
 
     suspend fun deleteNote(id: String): List<NoteResource> {
