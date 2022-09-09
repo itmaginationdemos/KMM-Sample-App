@@ -27,8 +27,8 @@ import com.example.voicenotes.model.NoteLengthType
 @Composable
 fun NoteItem(
     note: Note,
-    onItemClicked: (String) -> Unit,
-    onDeleteClicked: (String) -> Unit
+    onItemClicked: ((String) -> Unit)?,
+    onDeleteClicked: ((String) -> Unit)?
 ) {
     Card(
         modifier = Modifier.padding(8.dp),
@@ -37,7 +37,11 @@ fun NoteItem(
         Column(
             modifier = Modifier
                 .padding(12.dp)
-                .clickable { onItemClicked("$notesDetailScreen/${note.id}") },
+                .clickable(
+                    enabled = onItemClicked != null
+                ) {
+                    onItemClicked?.invoke("$notesDetailScreen/${note.id}")
+                },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ) {
@@ -48,16 +52,18 @@ fun NoteItem(
                     title = note.title,
                     modifier = Modifier.weight(8f)
                 )
-                IconButton(
-                    onClick = { onDeleteClicked(note.id) },
-                    modifier = Modifier.weight(2f)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "Delete note",
-                        tint = Color.Red,
-                        modifier = Modifier.padding(8.dp)
-                    )
+                if (onDeleteClicked != null) {
+                    IconButton(
+                        onClick = { onDeleteClicked(note.id) },
+                        modifier = Modifier.weight(2f)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Delete note",
+                            tint = Color.Red,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
                 }
             }
             LengthBubble(note.noteLength)

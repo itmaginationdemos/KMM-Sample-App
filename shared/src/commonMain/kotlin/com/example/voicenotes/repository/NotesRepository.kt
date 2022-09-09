@@ -28,7 +28,7 @@ class NotesRepository(
 
     fun generateNote(): NoteResource {
         val new = NoteResource(
-            Random.nextInt().toString(),
+            Random.nextInt(100, 10000).toString(),
             "Generic title",
             "Generic content"
         )
