@@ -41,14 +41,14 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 val koin = "3.2.0"
-val composeVersion = "1.2.0"
+val composeVersion = "1.2.0-alpha03"
 val composeSupport = "2.5.1"
 
 dependencies {
     implementation(project(":shared"))
 
     implementation("com.google.android.material:material:1.6.1")
-    implementation("androidx.appcompat:appcompat:1.5.0")
+    implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
