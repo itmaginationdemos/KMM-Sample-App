@@ -2,12 +2,12 @@ package com.example.voicenotes.usecase
 
 import com.example.voicenotes.model.toNote
 import com.example.voicenotes.repository.NotesRepository
+import kotlinx.coroutines.flow.map
 
-class GetNotes(
+class StreamNotes(
     private val repository: NotesRepository
 ) {
-    suspend operator fun invoke() =
-        repository.getNotes().map {
-            it.toNote()
-        }
+    operator fun invoke() =
+        repository.streamNotes()
+            .map { notes -> notes.map { it.toNote() } }
 }

@@ -19,7 +19,7 @@ fun NoteResource.toNote(): Note {
     return Note(
         title = title,
         content = content,
-        id = id,
+        id = id ?: "-1",
         noteLength = getFromContent(content)
     )
 }

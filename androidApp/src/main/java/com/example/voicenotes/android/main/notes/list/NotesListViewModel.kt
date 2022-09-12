@@ -5,11 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.voicenotes.model.Note
 import com.example.voicenotes.usecase.DeleteNote
-import com.example.voicenotes.usecase.GetNotes
+import com.example.voicenotes.usecase.StreamNotes
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class NotesListViewModel(
-    private val getNotes: GetNotes,
+    private val streamNotes: StreamNotes,
     private val deleteNote: DeleteNote
 ) : ViewModel() {
 
@@ -17,13 +18,13 @@ class NotesListViewModel(
 
     init {
         viewModelScope.launch {
-            notes.value = getNotes()
+            streamNotes().collect {
+                notes.value = it
+            }
         }
     }
 
     fun onDeleteClicked(id: String) {
-        viewModelScope.launch {
-            notes.value = deleteNote(id)
-        }
+        viewModelScope.launch { deleteNote(id) }
     }
 }

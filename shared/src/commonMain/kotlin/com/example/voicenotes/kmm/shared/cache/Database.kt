@@ -13,7 +13,7 @@ class Database(driver: SqlDriver) {
         }
     }
 
-    suspend fun getAllNotes(): List<NoteResource> {
+    fun getAllNotes(): List<NoteResource> {
         return dbQuery.selectAllNotes(::mapToResource).executeAsList()
     }
 
@@ -21,15 +21,7 @@ class Database(driver: SqlDriver) {
         return dbQuery.selectNoteById(id.toLong()).executeAsOneOrNull()?.toResource()
     }
 
-//    private fun createNotes() {
-//        val notes = listOf(note1, note2, note3, note2.copy(id = "4"), note3.copy(id = "5"))
-//        notes.forEach { note ->
-//            val noteLocal = dbQuery.selectNoteById(note.id).executeAsOneOrNull()
-//            if (noteLocal == null) insertNote(note)
-//        }
-//    }
-
-    fun insertNote(note: NoteResource) {
+    suspend fun insertNote(note: NoteResource) {
         dbQuery.insertNotes(
             id = null,
             title = note.title,

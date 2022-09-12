@@ -2,31 +2,39 @@ package com.example.voicenotes.repository
 
 import com.example.voicenotes.kmm.shared.cache.Database
 import com.example.voicenotes.model.NoteResource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class NotesRepository(
     private val db: Database
 ) {
 
-    private var notes: List<NoteResource> = mutableListOf()
+    private var notes: MutableStateFlow<List<NoteResource>> = MutableStateFlow(listOf())
 
-    suspend fun getNotes(force: Boolean = false): List<NoteResource> {
-        if (notes.isEmpty() || force) {
-            notes = db.getAllNotes().sortedBy { note -> note.id.toInt() }
-        }
-        return notes
+    init {
+        notes.tryEmit(getAllNotes())
     }
+
+    private fun getAllNotes() =
+        db.getAllNotes().sortedBy { it.id?.toInt() }
 
     suspend fun getNote(id: String): NoteResource? {
         return db.getNoteWithId(id)
     }
 
-    suspend fun deleteNote(id: String): List<NoteResource> {
+    suspend fun deleteNote(id: String) {
         db.deleteNote(id)
-        return getNotes(true)
+        notes.tryEmit(
+            notes.value.filter { it.id != id }
+        )
     }
 
-    fun generateNote(new: NoteResource): NoteResource {
+    suspend fun generateNote(new: NoteResource) {
         db.insertNote(new)
-        return new
+        notes.tryEmit(getAllNotes())
+    }
+
+    fun streamNotes(): Flow<List<NoteResource>> {
+        return notes
     }
 }
