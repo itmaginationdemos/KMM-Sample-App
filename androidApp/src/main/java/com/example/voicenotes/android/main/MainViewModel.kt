@@ -9,6 +9,6 @@ class MainViewModel(
 ) : ViewModel() {
 
     fun closeAddNote() {
-        navigator.emitDestinationSync(NavEvent.CloseNewNote)
+
     }
 }
