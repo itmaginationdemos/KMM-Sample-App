@@ -7,10 +7,6 @@ class Database(driver: SqlDriver) {
     private val database = AppDatabase(driver)
     private val dbQuery = database.appDatabaseQueries
 
-    init {
-        createNotes()
-    }
-
     suspend fun clearDatabase() {
         dbQuery.transaction {
             dbQuery.removeAllNotes()
@@ -22,40 +18,40 @@ class Database(driver: SqlDriver) {
     }
 
     suspend fun getNoteWithId(id: String): NoteResource? {
-        return dbQuery.selectNoteById(id).executeAsOneOrNull()?.toResource()
+        return dbQuery.selectNoteById(id.toLong()).executeAsOneOrNull()?.toResource()
     }
 
-    private fun createNotes() {
-        val notes = listOf(note1, note2, note3, note2.copy(id = "4"), note3.copy(id = "5"))
-        notes.forEach { note ->
-            val noteLocal = dbQuery.selectNoteById(note.id).executeAsOneOrNull()
-            if (noteLocal == null) insertNote(note)
-        }
-    }
+//    private fun createNotes() {
+//        val notes = listOf(note1, note2, note3, note2.copy(id = "4"), note3.copy(id = "5"))
+//        notes.forEach { note ->
+//            val noteLocal = dbQuery.selectNoteById(note.id).executeAsOneOrNull()
+//            if (noteLocal == null) insertNote(note)
+//        }
+//    }
 
     fun insertNote(note: NoteResource) {
         dbQuery.insertNotes(
-            id = note.id,
+            id = null,
             title = note.title,
             content = note.content
         )
     }
 
     suspend fun deleteNote(id: String) {
-        dbQuery.removeNoteById(id)
+        dbQuery.removeNoteById(id.toLong())
     }
 }
 
 private fun NoteLocalResource.toResource() =
     NoteResource(
-        id = id,
+        id = id.toString(),
         title = title ?: "",
         content = content ?: ""
     )
 
-fun mapToResource(id: String, title: String?, content: String?): NoteResource =
+fun mapToResource(id: Long, title: String?, content: String?): NoteResource =
     NoteResource(
-        id = id,
+        id = id.toString(),
         title = title ?: "",
         content = content ?: ""
     )

@@ -2,7 +2,6 @@ package com.example.voicenotes.repository
 
 import com.example.voicenotes.kmm.shared.cache.Database
 import com.example.voicenotes.model.NoteResource
-import kotlin.random.Random
 
 class NotesRepository(
     private val db: Database
@@ -26,12 +25,7 @@ class NotesRepository(
         return getNotes(true)
     }
 
-    fun generateNote(): NoteResource {
-        val new = NoteResource(
-            Random.nextInt(100, 10000).toString(),
-            "Generic title",
-            "Generic content"
-        )
+    fun generateNote(new: NoteResource): NoteResource {
         db.insertNote(new)
         return new
     }

@@ -5,14 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.voicenotes.model.Note
 import com.example.voicenotes.usecase.DeleteNote
-import com.example.voicenotes.usecase.GenerateNote
 import com.example.voicenotes.usecase.GetNotes
 import kotlinx.coroutines.launch
 
 class NotesListViewModel(
     private val getNotes: GetNotes,
-    private val deleteNote: DeleteNote,
-    private val generateNote: GenerateNote
+    private val deleteNote: DeleteNote
 ) : ViewModel() {
 
     val notes = mutableStateOf<List<Note>>(emptyList())
@@ -26,12 +24,6 @@ class NotesListViewModel(
     fun onDeleteClicked(id: String) {
         viewModelScope.launch {
             notes.value = deleteNote(id)
-        }
-    }
-
-    fun onAddClicked() {
-        viewModelScope.launch {
-            notes.value = notes.value + generateNote()
         }
     }
 }

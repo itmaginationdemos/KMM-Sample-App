@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_label">Title</string>
+    <string name="content_label">Content</string>
+    <string name="create_note">Create note</string>
+</resources>
