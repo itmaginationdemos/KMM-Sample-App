@@ -1,6 +1,9 @@
 package com.example.voicenotes.android.main.notes.newnote
 
 import android.Manifest
+import android.content.Context
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,26 +11,28 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.voicenotes.android.R
+import com.example.voicenotes.android.main.notes.newnote.widget.PlayVoiceNote
+import com.example.voicenotes.android.main.notes.newnote.widget.RecordVoiceNote
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
+import java.io.File
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -35,14 +40,10 @@ fun NewNoteForm(
     state: NewFormState,
     onEvent: (NewNoteEvent) -> Unit
 ) {
-    var showRecord = remember { false }
-
+    var recording by remember { mutableStateOf(false) }
     val permission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
-
-    if (permission.status == PermissionStatus.Granted) {
-        onEvent(NewNoteEvent.AllPermissionGranted)
-        showRecord = true
-    }
+    val context = LocalContext.current
+    val file = remember { File(context.filesDir, System.nanoTime().toString() + ".3gp") }
 
     Column(
         modifier = Modifier
@@ -78,29 +79,18 @@ fun NewNoteForm(
             onValueChange = { newSearch -> onEvent(NewNoteEvent.OnContentUpdate(newSearch)) }
         )
         Spacer(modifier = Modifier.height(4.dp))
-        if (showRecord) {
-            IconButton(
-                onClick = { onEvent(NewNoteEvent.OnRecord) }
-            ) {
-                Icon(
-                    imageVector = if (state.isRecording) Icons.Default.Done else Icons.Default.PlayArrow,
-                    contentDescription = stringResource(R.string.description_record_note),
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-
-            IconButton(
-                onClick = { onEvent(NewNoteEvent.Play) }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = stringResource(R.string.description_play_note),
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-        } else {
-            Button(onClick = { permission.launchPermissionRequest() }) {
-                Text(stringResource(R.string.record_voice_permission_button))
+        RecordVoiceNote(
+            toggle = { toggle ->
+                recording = toggle
+                toggleRecord(toggle, file, context)
+            },
+            hasPermission = permission.status == PermissionStatus.Granted,
+            onNoPermission = { permission.launchPermissionRequest() }
+        )
+        // also file exists
+        if (!recording && permission.status == PermissionStatus.Granted) {
+            PlayVoiceNote { toggle, lambda ->
+                togglePlay(togglePlaying = toggle, uri = file.path, onCompleted = lambda)
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -110,5 +100,59 @@ fun NewNoteForm(
         ) {
             Text(text = stringResource(id = R.string.create_note))
         }
+    }
+}
+
+private var recorder: MediaRecorder? = null
+private var player: MediaPlayer? = null
+
+fun toggleRecord(toggleRecording: Boolean, file: File, context: Context) {
+    if (toggleRecording) {
+        recorder = initRecorder(file, context)
+        try {
+            recorder?.prepare()
+        } catch (_: Exception) {
+        }
+        recorder?.start()
+    } else {
+        recorder?.apply {
+            stop()
+            release()
+        }
+        recorder = null
+    }
+}
+
+private fun togglePlay(
+    togglePlaying: Boolean,
+    uri: String,
+    onCompleted: () -> Unit
+) {
+    if (togglePlaying) {
+        player = MediaPlayer().apply {
+            try {
+                setDataSource(uri)
+                prepare()
+                start()
+            } catch (_: Exception) {
+            }
+
+            this.setOnCompletionListener {
+                this.stop()
+                onCompleted()
+            }
+        }
+    } else {
+        player?.release()
+        player = null
+    }
+}
+
+private fun initRecorder(file: File, context: Context): MediaRecorder {
+    return MediaRecorder(context).apply {
+        setAudioSource(MediaRecorder.AudioSource.MIC)
+        setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+        setOutputFile(file)
+        setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
     }
 }

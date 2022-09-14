@@ -39,13 +39,6 @@ class NewNoteViewModel(
                     navigator.emitDestinationSync(NavEvent.CloseNewNote)
                 }
             }
-            NewNoteEvent.OnRecord -> {
-                val newState = !state.value.isRecording
-                state.mutate { copy(isRecording = newState) }
-                navigator.emitDestinationSync(NavEvent.Record(newState))
-            }
-            NewNoteEvent.AllPermissionGranted -> navigator.emitDestinationSync(NavEvent.InitRecorder)
-            NewNoteEvent.Play -> navigator.emitDestinationSync(NavEvent.StartPlaying)
         }
     }
 }

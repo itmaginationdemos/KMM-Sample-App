@@ -3,7 +3,8 @@
     <string name="title_label">Title</string>
     <string name="content_label">Content</string>
     <string name="create_note">Create note</string>
-    <string name="description_record_note">Record note</string>
-    <string name="description_play_note">Play note</string>
-    <string name="record_voice_permission_button">Allow note recording.</string>
+    <string name="record_voice_note">Record a voice note</string>
+    <string name="description_record_note">Record note or stop recording</string>
+    <string name="play_voice_note">Play your voice note</string>
+    <string name="description_play_note">Play note or stop playing</string>
 </resources>

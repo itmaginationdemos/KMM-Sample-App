@@ -1,17 +1,11 @@
 package com.example.voicenotes.android.main
 
-import android.content.Context
-import android.media.MediaPlayer
-import android.media.MediaRecorder
-import android.media.MediaRecorder.AudioSource.MIC
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -32,8 +26,6 @@ import com.example.voicenotes.android.main.notes.newnote.NewNoteForm
 import com.example.voicenotes.android.main.notes.newnote.NewNoteViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.getViewModel
-import java.io.File
-import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,53 +34,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent { AppNavHost(navigator = navigator, context = this) }
-    }
-}
-
-private fun initRecorder(context: Context): MediaRecorder {
-    val file = File(context.filesDir, "myVoiceNote.3gp")
-    Log.d("karlo", "initRecorder: ${file.absolutePath}")
-
-    return MediaRecorder(context).apply {
-        setAudioSource(MIC)
-        setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        setOutputFile(file)
-        setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-        prepare()
-    }
-}
-
-private fun startPlaying(context: Context): MediaPlayer {
-    val uri = "${context.filesDir}/myVoiceNote.3gp"
-    return MediaPlayer().apply {
-        try {
-            setDataSource(uri)
-            prepare()
-            start()
-        } catch (e: IOException) {
-            Log.d("karlo", "startPlaying: $e")
-        }
+        setContent { AppNavHost(navigator = navigator) }
     }
 }
 
 @Composable
 fun AppNavHost(
     navigator: Navigator,
-    navController: NavHostController = rememberNavController(),
-    context: Context
+    navController: NavHostController = rememberNavController()
 ) {
-    var recorder: MediaRecorder? = remember { null }
-    var player: MediaPlayer? = remember { null }
-
     LaunchedEffect(key1 = navigator) {
         navigator.navigationEvent
             .collect {
                 when (it) {
                     NavEvent.CloseNewNote -> navController.popBackStack()
-                    NavEvent.InitRecorder -> if (recorder == null) recorder = initRecorder(context)
-                    is NavEvent.Record -> toggleRecord(recorder, it.isRecording)
-                    NavEvent.StartPlaying -> player = startPlaying(context)
                 }
             }
     }
@@ -127,13 +86,5 @@ fun AppNavHost(
                 NotesDetail(note = vm.note.value)
             }
         }
-    }
-}
-
-fun toggleRecord(recorder: MediaRecorder?, toggleRecording: Boolean) {
-    if (toggleRecording) {
-        recorder?.start()
-    } else {
-        recorder?.stop()
     }
 }
