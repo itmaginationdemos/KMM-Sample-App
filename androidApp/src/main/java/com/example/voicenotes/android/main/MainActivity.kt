@@ -1,20 +1,17 @@
 package com.example.voicenotes.android.main
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.media.MediaRecorder.AudioSource.MIC
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.core.app.ActivityCompat
+import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -36,58 +33,41 @@ import com.example.voicenotes.android.main.notes.newnote.NewNoteViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.getViewModel
 import java.io.File
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        const val REQUEST_RECORD_AUDIO_PERMISSION = 200
-        const val REQUEST_WRITE_PERMISSION = 201
-        var permissionsToAsk: Array<String> =
-            arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    }
-
-    var recorder: MediaRecorder? = null
-
     private val navigator: Navigator by inject()
-    private var permissionToRecordAccepted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent { AppNavHost(navigator = navigator, recorder = recorder, context = this) }
+        setContent { AppNavHost(navigator = navigator, context = this) }
     }
+}
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionToRecordAccepted =
-            if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION && grantResults.isNotEmpty()) {
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
-            } else if (requestCode == REQUEST_WRITE_PERMISSION && grantResults.isNotEmpty()) {
-                initRecorder()
-                grantResults[1] == PackageManager.PERMISSION_GRANTED
-            } else {
-                false
-            }
+private fun initRecorder(context: Context): MediaRecorder {
+    val file = File(context.filesDir, "myVoiceNote.3gp")
+    Log.d("karlo", "initRecorder: ${file.absolutePath}")
+
+    return MediaRecorder(context).apply {
+        setAudioSource(MIC)
+        setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+        setOutputFile(file)
+        setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+        prepare()
     }
+}
 
-    private fun initRecorder() {
-        Log.d("karlo", "initRecorder: ")
-        val file = File.createTempFile(
-            "test",
-            ".3gp",
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_AUDIOBOOKS)
-        )
-
-        recorder = MediaRecorder(this).apply {
-            setAudioSource(MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setOutputFile(file)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+private fun startPlaying(context: Context): MediaPlayer {
+    val uri = "${context.filesDir}/myVoiceNote.3gp"
+    return MediaPlayer().apply {
+        try {
+            setDataSource(uri)
             prepare()
+            start()
+        } catch (e: IOException) {
+            Log.d("karlo", "startPlaying: $e")
         }
     }
 }
@@ -96,15 +76,19 @@ class MainActivity : AppCompatActivity() {
 fun AppNavHost(
     navigator: Navigator,
     navController: NavHostController = rememberNavController(),
-    recorder: MediaRecorder?,
     context: Context
 ) {
+    var recorder: MediaRecorder? = remember { null }
+    var player: MediaPlayer? = remember { null }
+
     LaunchedEffect(key1 = navigator) {
         navigator.navigationEvent
             .collect {
                 when (it) {
                     NavEvent.CloseNewNote -> navController.popBackStack()
+                    NavEvent.InitRecorder -> if (recorder == null) recorder = initRecorder(context)
                     is NavEvent.Record -> toggleRecord(recorder, it.isRecording)
+                    NavEvent.StartPlaying -> player = startPlaying(context)
                 }
             }
     }
@@ -127,11 +111,6 @@ fun AppNavHost(
 
             // new note
             composable(newNoteScreen) {
-                ActivityCompat.requestPermissions(
-                    context as Activity,
-                    MainActivity.permissionsToAsk,
-                    MainActivity.REQUEST_RECORD_AUDIO_PERMISSION
-                )
                 val vm = getViewModel<NewNoteViewModel>()
                 NewNoteForm(vm.state.value, vm::onEvent)
             }
@@ -151,12 +130,10 @@ fun AppNavHost(
     }
 }
 
-fun toggleRecord(recorder: MediaRecorder?, recording: Boolean) {
-    Log.d("karlo", "toggleRecord: $recording")
-    Log.d("karlo", "toggleRecord: $recorder")
-    if (recording) {
-        recorder?.stop()
-    } else {
+fun toggleRecord(recorder: MediaRecorder?, toggleRecording: Boolean) {
+    if (toggleRecording) {
         recorder?.start()
+    } else {
+        recorder?.stop()
     }
 }

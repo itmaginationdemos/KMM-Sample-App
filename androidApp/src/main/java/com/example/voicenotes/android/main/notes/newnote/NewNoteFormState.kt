@@ -13,4 +13,6 @@ sealed interface NewNoteEvent {
     data class OnContentUpdate(val content: String) : NewNoteEvent
     object OnSave : NewNoteEvent
     object OnRecord : NewNoteEvent
+    object AllPermissionGranted : NewNoteEvent
+    object Play : NewNoteEvent
 }

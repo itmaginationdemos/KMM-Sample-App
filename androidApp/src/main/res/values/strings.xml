@@ -3,4 +3,7 @@
     <string name="title_label">Title</string>
     <string name="content_label">Content</string>
     <string name="create_note">Create note</string>
+    <string name="description_record_note">Record note</string>
+    <string name="description_play_note">Play note</string>
+    <string name="record_voice_permission_button">Allow note recording.</string>
 </resources>

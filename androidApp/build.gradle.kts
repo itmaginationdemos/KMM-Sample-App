@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         applicationId = "com.example.voicenotes.android"
         minSdk = 28
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }
@@ -64,5 +64,8 @@ dependencies {
     implementation("androidx.compose.animation:animation:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$composeSupport")
+    implementation("androidx.navigation:navigation-compose:$composeSupport")
+    implementation("com.google.accompanist:accompanist-permissions:0.26.3-beta")
+
     implementation("androidx.navigation:navigation-compose:$composeSupport")
 }
