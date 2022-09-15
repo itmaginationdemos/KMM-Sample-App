@@ -10,13 +10,15 @@ class GenerateNote(
 ) {
     suspend operator fun invoke(
         title: String,
-        content: String
+        content: String,
+        filePath: String?
     ) {
         withContext(Dispatchers.IO) {
             val new = NoteResource(
-                null,
-                title,
-                content
+                id = null,
+                title = title,
+                content = content,
+                filePath = filePath
             )
             repository.generateNote(new)
         }

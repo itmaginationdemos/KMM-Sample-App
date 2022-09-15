@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.voicenotes.android.main.core.constants.notesDetailScreen
+import com.example.voicenotes.android.main.notes.helpers.togglePlay
+import com.example.voicenotes.android.main.notes.newnote.widget.PlayVoiceNote
 import com.example.voicenotes.model.Note
 import com.example.voicenotes.model.NoteLength
 import com.example.voicenotes.model.NoteLengthType
@@ -28,7 +30,8 @@ import com.example.voicenotes.model.NoteLengthType
 fun NoteItem(
     note: Note,
     onItemClicked: ((String) -> Unit)?,
-    onDeleteClicked: ((String) -> Unit)?
+    onDeleteClicked: ((String) -> Unit)?,
+    canListen: Boolean = false
 ) {
     Card(
         modifier = Modifier.padding(8.dp),
@@ -67,6 +70,11 @@ fun NoteItem(
                 }
             }
             LengthBubble(note.noteLength)
+            if (canListen) {
+                PlayVoiceNote { toggle, lambda ->
+                    togglePlay(togglePlaying = toggle, uri = note.filePath, onCompleted = lambda)
+                }
+            }
             Content(note.content)
         }
     }

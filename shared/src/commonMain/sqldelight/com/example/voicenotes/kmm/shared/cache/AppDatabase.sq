@@ -1,12 +1,13 @@
 CREATE TABLE NoteLocalResource (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
 title TEXT,
-content TEXT
+content TEXT,
+filePath TEXT
 );
 
 insertNotes:
-INSERT INTO NoteLocalResource(id, title, content)
-VALUES (?,?,?);
+INSERT INTO NoteLocalResource(id, title, content, filePath)
+VALUES (?,?,?, ?);
 
 removeAllNotes:
 DELETE FROM NoteLocalResource;

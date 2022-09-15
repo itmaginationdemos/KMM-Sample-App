@@ -18,7 +18,8 @@ fun NotesDetail(
             NoteItem(
                 note = it,
                 onItemClicked = null,
-                onDeleteClicked = null
+                onDeleteClicked = null,
+                canListen = true
             )
         }
     }

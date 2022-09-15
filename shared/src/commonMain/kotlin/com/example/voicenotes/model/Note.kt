@@ -4,6 +4,7 @@ data class Note(
     val id: String,
     val title: String,
     val content: String,
+    val filePath: String?,
     val noteLength: NoteLength
 )
 
@@ -20,6 +21,7 @@ fun NoteResource.toNote(): Note {
         title = title,
         content = content,
         id = id ?: "-1",
+        filePath = filePath,
         noteLength = getFromContent(content)
     )
 }

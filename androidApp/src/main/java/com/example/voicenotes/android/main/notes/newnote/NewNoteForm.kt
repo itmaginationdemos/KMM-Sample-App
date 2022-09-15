@@ -27,6 +27,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.voicenotes.android.R
+import com.example.voicenotes.android.main.notes.helpers.togglePlay
+import com.example.voicenotes.android.main.notes.helpers.toggleRecord
 import com.example.voicenotes.android.main.notes.newnote.widget.PlayVoiceNote
 import com.example.voicenotes.android.main.notes.newnote.widget.RecordVoiceNote
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -87,7 +89,6 @@ fun NewNoteForm(
             hasPermission = permission.status == PermissionStatus.Granted,
             onNoPermission = { permission.launchPermissionRequest() }
         )
-        // also file exists
         if (!recording && permission.status == PermissionStatus.Granted) {
             PlayVoiceNote { toggle, lambda ->
                 togglePlay(togglePlaying = toggle, uri = file.path, onCompleted = lambda)
@@ -96,63 +97,9 @@ fun NewNoteForm(
         Spacer(modifier = Modifier.height(12.dp))
         Button(
             enabled = state.enabled,
-            onClick = { onEvent(NewNoteEvent.OnSave) }
+            onClick = { onEvent(NewNoteEvent.OnSave(file.path)) }
         ) {
             Text(text = stringResource(id = R.string.create_note))
         }
-    }
-}
-
-private var recorder: MediaRecorder? = null
-private var player: MediaPlayer? = null
-
-fun toggleRecord(toggleRecording: Boolean, file: File, context: Context) {
-    if (toggleRecording) {
-        recorder = initRecorder(file, context)
-        try {
-            recorder?.prepare()
-        } catch (_: Exception) {
-        }
-        recorder?.start()
-    } else {
-        recorder?.apply {
-            stop()
-            release()
-        }
-        recorder = null
-    }
-}
-
-private fun togglePlay(
-    togglePlaying: Boolean,
-    uri: String,
-    onCompleted: () -> Unit
-) {
-    if (togglePlaying) {
-        player = MediaPlayer().apply {
-            try {
-                setDataSource(uri)
-                prepare()
-                start()
-            } catch (_: Exception) {
-            }
-
-            this.setOnCompletionListener {
-                this.stop()
-                onCompleted()
-            }
-        }
-    } else {
-        player?.release()
-        player = null
-    }
-}
-
-private fun initRecorder(file: File, context: Context): MediaRecorder {
-    return MediaRecorder(context).apply {
-        setAudioSource(MediaRecorder.AudioSource.MIC)
-        setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        setOutputFile(file)
-        setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
     }
 }
