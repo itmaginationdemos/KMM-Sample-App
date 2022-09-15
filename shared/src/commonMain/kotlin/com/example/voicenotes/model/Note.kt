@@ -4,7 +4,7 @@ data class Note(
     val id: String,
     val title: String,
     val content: String,
-    val filePath: String?,
+    val filePath: String,
     val noteLength: NoteLength
 )
 

@@ -1,9 +1,6 @@
 package com.example.voicenotes.android.main.notes.newnote
 
 import android.Manifest
-import android.content.Context
-import android.media.MediaPlayer
-import android.media.MediaRecorder
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -89,7 +86,7 @@ fun NewNoteForm(
             hasPermission = permission.status == PermissionStatus.Granted,
             onNoPermission = { permission.launchPermissionRequest() }
         )
-        if (!recording && permission.status == PermissionStatus.Granted) {
+        if (!recording && permission.status == PermissionStatus.Granted && file.length() > 0) {
             PlayVoiceNote { toggle, lambda ->
                 togglePlay(togglePlaying = toggle, uri = file.path, onCompleted = lambda)
             }

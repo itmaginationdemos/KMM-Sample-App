@@ -8,5 +8,5 @@ data class NoteResource(
     @SerialName("id") val id: String?,
     @SerialName("title") val title: String,
     @SerialName("content") val content: String,
-    @SerialName("filePath") val filePath: String?
+    @SerialName("filePath") val filePath: String
 )

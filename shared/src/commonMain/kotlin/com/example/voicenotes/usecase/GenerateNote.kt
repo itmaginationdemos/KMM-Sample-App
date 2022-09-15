@@ -11,7 +11,7 @@ class GenerateNote(
     suspend operator fun invoke(
         title: String,
         content: String,
-        filePath: String?
+        filePath: String
     ) {
         withContext(Dispatchers.IO) {
             val new = NoteResource(

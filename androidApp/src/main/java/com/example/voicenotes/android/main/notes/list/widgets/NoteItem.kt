@@ -25,6 +25,7 @@ import com.example.voicenotes.android.main.notes.newnote.widget.PlayVoiceNote
 import com.example.voicenotes.model.Note
 import com.example.voicenotes.model.NoteLength
 import com.example.voicenotes.model.NoteLengthType
+import java.io.File
 
 @Composable
 fun NoteItem(
@@ -70,12 +71,12 @@ fun NoteItem(
                 }
             }
             LengthBubble(note.noteLength)
-            if (canListen) {
+            Content(note.content)
+            if (canListen && File(note.filePath).length() > 0) {
                 PlayVoiceNote { toggle, lambda ->
                     togglePlay(togglePlaying = toggle, uri = note.filePath, onCompleted = lambda)
                 }
             }
-            Content(note.content)
         }
     }
 }

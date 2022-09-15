@@ -40,7 +40,7 @@ private fun NoteLocalResource.toResource() =
         id = id.toString(),
         title = title ?: "",
         content = content ?: "",
-        filePath = filePath
+        filePath = filePath ?: "",
     )
 
 fun mapToResource(id: Long, title: String?, content: String?, filePath: String?): NoteResource =
@@ -48,5 +48,5 @@ fun mapToResource(id: Long, title: String?, content: String?, filePath: String?)
         id = id.toString(),
         title = title ?: "",
         content = content ?: "",
-        filePath = filePath
+        filePath = filePath ?: "",
     )
