@@ -5,7 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -71,6 +73,7 @@ fun NoteItem(
                 }
             }
             LengthBubble(note.noteLength)
+            Spacer(modifier = Modifier.height(4.dp))
             Content(note.content)
             if (canListen && File(note.filePath).length() > 0) {
                 PlayVoiceNote { toggle, lambda ->
@@ -85,7 +88,7 @@ fun NoteItem(
 fun Title(title: String, modifier: Modifier) {
     Text(
         text = title,
-        modifier = modifier.padding(8.dp),
+        modifier = modifier,
         style = MaterialTheme.typography.h5
     )
 }
@@ -94,7 +97,6 @@ fun Title(title: String, modifier: Modifier) {
 fun Content(content: String) {
     Text(
         text = content,
-        modifier = Modifier.padding(4.dp),
         style = MaterialTheme.typography.body1
     )
 }
