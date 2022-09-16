@@ -10,5 +10,5 @@ data class NewFormState(
 sealed interface NewNoteEvent {
     data class OnTitleUpdate(val title: String) : NewNoteEvent
     data class OnContentUpdate(val content: String) : NewNoteEvent
-    data class OnSave(val filePath: String?) : NewNoteEvent
+    data class OnSave(val filePath: String) : NewNoteEvent
 }
