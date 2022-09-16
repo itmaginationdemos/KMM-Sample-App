@@ -32,13 +32,11 @@ class NewNoteViewModel(
             }
             is NewNoteEvent.OnSave -> {
                 viewModelScope.launch {
-                    event.filePath?.let {
-                        generateNote(
-                            title = state.value.title,
-                            content = state.value.content,
-                            filePath = it
-                        )
-                    }
+                    generateNote(
+                        title = state.value.title,
+                        content = state.value.content,
+                        filePath = event.filePath
+                    )
                     navigator.emitDestinationSync(NavEvent.CloseNewNote)
                 }
             }
