@@ -13,7 +13,7 @@ class GenerateNote(
         content: String,
         filePath: String
     ) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Default) {
             val new = NoteResource(
                 id = null,
                 title = title,

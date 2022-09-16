@@ -10,7 +10,7 @@ class GetNote(
     private val repository: NotesRepository
 ) {
     suspend operator fun invoke(id: String): Note? {
-        return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.Default) {
             repository.getNote(id)?.toNote()
         }
     }
