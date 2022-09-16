@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("native.cocoapods")
     kotlin("plugin.serialization") version "1.6.21"
     id("com.android.library")
     id("com.squareup.sqldelight")
@@ -7,6 +8,20 @@ plugins {
 
 kotlin {
     android()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        version = "1.0"
+        summary = "Some description for the Shared Module"
+        homepage = "Link to the Shared Module homepage"
+        ios.deploymentTarget = "14.1"
+//        podfile = project.file("../iosApp/Podfile")
+        framework {
+            baseName = "shared"
+        }
+    }
 
     val sqlDelightVersion = "1.5.2"
     val ktorVersion = "2.0.2"
@@ -46,6 +61,15 @@ kotlin {
             }
             dependsOn(commonMain)
         }
+        val iosX64Main by getting {
+            dependsOn(iosMain)
+        }
+        val iosArm64Main by getting {
+            dependsOn(iosMain)
+        }
+        val iosSimulatorArm64Main by getting {
+            dependsOn(iosMain)
+        }
     }
 }
 
@@ -62,6 +86,9 @@ kotlin.targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarge
     binaries.all {
         binaryOptions["memoryModel"] = "experimental"
     }
+}
+dependencies {
+    implementation("androidx.core:core-ktx:+")
 }
 
 sqldelight {
